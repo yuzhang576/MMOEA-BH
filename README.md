@@ -3,5 +3,3 @@ Block optimization and switchable hybrid clustering for multimodal multiobjectiv
 
 Requirements:
 PlatEMO == 4.9
-
-Some of the called functions will be uploaded after subsequent organization and completion.
