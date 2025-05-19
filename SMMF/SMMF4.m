@@ -1,0 +1,50 @@
+classdef SMMF4 < PROBLEM
+% <2025> <multi> <real> <multimodal>
+% SMMF4
+% Multi-modal Multi-objective test Function with shifted local Pareto front
+
+%------------------------------- Reference --------------------------------
+% Block optimization and switchable hybrid clustering for multimodal
+% multiobjective evolutionary optimization with shifted local Pareto front
+%------------------------------- Copyright --------------------------------
+% Copyright (c) 2018-2019 BIMK Group. You are free to use the PlatEMO for
+% research purposes. All publications which use this platform or any code
+% in the platform should acknowledge the use of "PlatEMO" and reference "Ye
+% Tian, Ran Cheng, Xingyi Zhang, and Yaochu Jin, PlatEMO: A MATLAB platform
+% for evolutionary multi-objective optimization [educational forum], IEEE
+% Computational Intelligence Magazine, 2017, 12(4): 73-87".
+%--------------------------------------------------------------------------
+
+    properties(Access = public)
+        POS;    % Pareto optimal set for IGDX calculation
+    end
+    methods
+        %% Initialization
+        function Setting(obj)
+            obj.M = 2;
+            obj.D = 2;
+            [obj.lower, obj.upper] = obj.ParameterSet([1, -1], [3, 1]);
+            obj.encoding = ones(1,obj.D);
+        end
+        %% Calculate objective values
+        function PopObj = CalObj(obj,PopDec)
+            PopObj(:,1) = abs(PopDec(:,1)-2);
+            index1 = PopDec(:,1)<2;
+            PopObj(index1,2) = 1-sqrt(PopObj(index1,1))+2*(PopDec(index1,2)-sin(6*pi*PopObj(index1,1)+pi)).^2;
+            index2 = PopDec(:,1)>=2;
+            PopObj(index2,2) = 1-sqrt(PopObj(index2,1))+2*(PopDec(index2,2)-sin(2*pi*PopObj(index2,1)+pi)).^2;
+            
+            idx1 = PopDec(:,1) >= 2;
+            idx2 = PopDec(:,1) < 2;
+            PopObj(idx1,:) = PopObj(idx1,:) + 1;
+            PopObj(idx2,:) = PopObj(idx2,:) + 0;
+        end
+        %% Sample reference points on Pareto front
+        function P = GetOptimum(obj,N)
+            temp = load(strrep(mfilename, '_modified', ''));
+            obj.POS = temp.PS;
+            P = temp.PF;
+            P = [P;P+1];
+        end
+    end
+end
