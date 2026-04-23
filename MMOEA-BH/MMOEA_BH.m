@@ -20,7 +20,7 @@ classdef MMOEA_BH < ALGORITHM
     methods
         function main(Algorithm,Problem)
             %% Parameter setting            
-            [epsilon, minpts] = Algorithm.ParameterSet(0.15, 5);
+            [g, epsilon, minpts] = Algorithm.ParameterSet(10, 0.15, 5);
             
             %% Generate random population
             Population = Problem.Initialization();
@@ -47,7 +47,7 @@ classdef MMOEA_BH < ALGORITHM
                     [Pbest, Nbest] = MMOEA_Utils.rep_selection_pso(Problem, PBA, PBA_SCD, LBA, LBA_SCD, idx_APC, maxCluster);
                     Population     = operator_PSO(Problem, Population, Pbest, Nbest);
                     
-                    if mod(gen,10) == 0                        
+                    if mod(gen,g) == 0                        
                         [Archive, LBA, LBA_SCD, PBA, PBA_SCD, idx_APC, maxCluster] = Environmental_Selection('APC', Problem, Archive, Population, LBA, PBA, n_PBA);
                     else                        
                         [Archive, LBA, LBA_SCD, PBA, PBA_SCD, idx_APC, maxCluster] = Environmental_Selection('kmeans', Problem, Archive, Population, LBA, PBA, n_PBA, maxCluster);
